@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
+export let ActiveTabInRef;
+export let ActiveTabRef;
+
 const InNavigation = ({routes, defaultHidden=[], defaultActiveInd = 0, children}) => {
 
-    let ActiveTabInRef = useRef();
-    let ActiveTabRef = useRef();
+    ActiveTabInRef = useRef();
+    ActiveTabRef = useRef();
 
     let [inNavigationInd, setInNavigationInd] = useState(defaultActiveInd);
 
