@@ -10,7 +10,7 @@ import { filterPagination } from "../common/filter-pagination-data";
 import LoadMoreData from "../component/load-more";
 
 const Home = () => {
-  let [blogs, setBlog] = useState({results: []});
+  let [blogs, setBlog] = useState({ results: [] });
   let [trendingBlogs, setTrendingBlogs] = useState([]);
   let [pageState, setPageState] = useState("home");
 
@@ -23,22 +23,21 @@ const Home = () => {
     "tech",
     "finances",
     "travel",
+    
   ];
 
   const fetchLatestBlogs = (page = 1) => {
     axios
       .post("http://localhost:5000" + "/blog/latest-blogs", {page})
       .then(async({ data }) => {
-        console.log(data);
 
         let formatedData = await filterPagination({
-          state : blogs,
+          state : {results : blogs.results },
           data : data.blogs,
           page,
           countRoute : "/all-latest-blogs-count"
         })
         
-        console.log(formatedData);
         setBlog(formatedData);
       })
       .catch((err) => {
@@ -51,8 +50,7 @@ const Home = () => {
       axios
       .post("http://localhost:5000" + "/blog/search-blogs", {tag: pageState.trim().toLowerCase()})
       .then(({ data }) => {
-        setBlog(data.blogs);
-        console.log(data);
+        setBlog({ results: data.blogs });
       })
       .catch((err) => {
         console.log(err);
@@ -87,7 +85,7 @@ const Home = () => {
 
   const loadBlogByCategory = (e) => {
     let category = e.target.innerText.toLowerCase();
-    setBlog(null);
+    setBlog({ results: [] });
     if(pageState === category){
       setPageState("home");
       return;
@@ -106,10 +104,14 @@ const Home = () => {
               defaultHidden={["trending blogs"]}
             >
               <div>
+
+              {console.log('Blogs:', blogs)}
+              {console.log('Blogs results:', blogs?.results)}
+
                 {blogs == null ? (
                   <Loader />
                 ) : (
-                  blogs.results?.length ?
+                  blogs.results.length > 0 ?
                     blogs.results.map((blog, i) => (
                       <AnimationWrapper
                         transition={{ duration: 1, delay: i * 0.1 }}
